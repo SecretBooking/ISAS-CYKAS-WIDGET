@@ -1,0 +1,68 @@
+<div id="custom-widget"></div>
+
+<style>
+  #custom-widget {
+    background-color: #2596be;
+    color: #FFFFFF;
+    padding: 20px;
+  }
+
+  .event-item {
+    margin-bottom: 20px;
+  }
+
+  .event-title {
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .event-date {
+    font-style: italic;
+    font-size: 14px;
+  }
+</style>
+
+<script>
+  const apiKey = '4ebb60775a47e9a8404bf9e09f579ec32eb5f183a220eec8ab5a8055fd646b96e2f7d8f845d2e9cb1c1174159606fbbc1d578abc1c8b598b47e9f87865c51d42602d1f63f414da60cf5bcc82cf6512a7a8f498ce8f7ad4ef70c274f2cdd862085edbce838be3d9e0fcacbb5661a9cf'; // Replace with your actual API key
+  const apiUrl = 'https://api.humanitix.com/v1/events';
+
+  async function fetchEvents() {
+    try {
+      const response = await fetch(apiUrl, {
+        headers: {
+          'x-api-key': apiKey
+        }
+      });
+      const eventData = await response.json();
+      return eventData.events;
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      return [];
+    }
+  }
+
+  function renderEvents(events) {
+    const widgetContainer = document.getElementById('custom-widget');
+
+    if (events.length === 0) {
+      widgetContainer.innerHTML = 'No upcoming events.';
+    } else {
+      let eventList = '';
+
+      events.forEach((event) => {
+        const eventItem = `
+          <div class="event-item">
+            <div class="event-title">${event.name}</div>
+            <div class="event-date">${event.startDate}</div>
+          </div>
+        `;
+
+        eventList += eventItem;
+      });
+
+      widgetContainer.innerHTML = eventList;
+    }
+  }
+
+  fetchEvents().then(renderEvents);
+</script>
